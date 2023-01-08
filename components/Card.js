@@ -3,17 +3,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { buyNFT } from "../redux/interactions";
 
-const CardComponent = ({nftData}) => {
-  
-  const router = useRouter()
+const CardComponent = ({ nftData }) => {
+  const router = useRouter();
   const dispatch = useDispatch();
-  const marketplaceContract = useSelector(state=>state.nftMarketplaceReducer.contract)
-  const account = useSelector(state=>state.web3Reducer.account)
+  const marketplaceContract = useSelector(
+    (state) => state.nftMarketplaceReducer.contract
+  );
+  const account = useSelector((state) => state.web3Reducer.account);
 
-  const buyMarketplaceNft = (token,price) =>{
-
-    const onSuccess = ()=> {
-      toast.success("woo hoo ! you ow this NFT 🎉", {
+  const buyMarketplaceNft = (token, price) => {
+    const onSuccess = () => {
+      toast.success("woo hoo ! you own this NFT 🎉", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -21,10 +21,10 @@ const CardComponent = ({nftData}) => {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        });
-        router.push("my-orders")
-    }
-    const onError = (error)=> {
+      });
+      router.push("my-orders");
+    };
+    const onError = (error) => {
       toast.error(error, {
         position: "top-right",
         autoClose: 5000,
@@ -33,17 +33,24 @@ const CardComponent = ({nftData}) => {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        });
-    }
+      });
+    };
 
-    buyNFT(marketplaceContract,account,token,price,dispatch,onSuccess,onError)
-  }
+    buyNFT(
+      marketplaceContract,
+      account,
+      token,
+      price,
+      dispatch,
+      onSuccess,
+      onError
+    );
+  };
 
   return (
-    <div className="root">
-          <div className="card">
+    <div className="card">
       {/*  eslint-disable-next-line @next/next/no-img-element */}
-      <img 
+      <img
         src={nftData.image}
         className="card-img-top"
         width={"100%"}
@@ -52,28 +59,31 @@ const CardComponent = ({nftData}) => {
       />
       <div className="card-body">
         <div className="d-flex justify-content-between">
-        <div className="d-flex flex-column">
-          <small>#{nftData.token}</small>
-          <p>{nftData.name}</p>
+          <div className="d-flex flex-column">
+            <small>#{nftData.token}</small>
+            <p>{nftData.name}</p>
+          </div>
+          <div className="d-flex flex-column">
+            <small>Bid price</small>
+            <p>
+              <i className="fab fa-ethereum"></i> {nftData.price}
+            </p>
+          </div>
         </div>
-        <div className="d-flex flex-column">
-          <small>Bid price</small>
-          <p><i className="fab fa-ethereum"></i> {nftData.price}</p>
-        </div>
-        </div>
-        
       </div>
-      {
-        router.pathname === "/" && nftData.creator !== account?
+      {router.pathname === "/" && nftData.creator !== account ? (
         <div className="card-footer text-muted">
-        <button className="btn text-center buy-now btn-sm" onClick={()=>buyMarketplaceNft(nftData.token,nftData.price)}>Buy now</button>
-     </div>
-     :""
-      }
-
+          <button
+            className="btn text-center buy-now btn-sm"
+            onClick={() => buyMarketplaceNft(nftData.token, nftData.price)}
+          >
+            Buy now
+          </button>
+        </div>
+      ) : (
+        ""
+      )}
     </div>
-    </div>
-
   );
 };
 
